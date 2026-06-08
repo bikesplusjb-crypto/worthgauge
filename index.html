@@ -161,6 +161,12 @@
   .card h3{font-family:'Cormorant Garamond';font-weight:600;font-size:21px;margin:0 0 3px;line-height:1.2;color:var(--navy)}
   .meta{color:var(--mut);font-size:11px;font-family:'JetBrains Mono';letter-spacing:.3px;margin-bottom:12px}
   .cnote{font-size:11px;color:var(--ink2);line-height:1.45;margin:-6px 0 12px;font-style:italic;font-family:'Cormorant Garamond';font-size:13px}
+  .photofield{margin-top:4px}
+  .photofield input[type=file]{width:100%;font-family:'Inter';font-size:12px;color:var(--ink2)}
+  .photoprev{width:100%;max-height:200px;object-fit:cover;border-radius:4px;border:1px solid var(--line2);margin-bottom:8px;display:block}
+  .photoclear{background:none;border:none;color:var(--red);font-family:'Inter';font-size:11px;cursor:pointer;margin-top:6px;text-decoration:underline}
+  .cardphoto{width:100%;height:150px;object-fit:cover;border-radius:4px 4px 0 0;display:block;border-bottom:1px solid var(--line)}
+  .photobusy{font-family:'JetBrains Mono';font-size:10px;color:var(--brass);letter-spacing:1px;text-transform:uppercase;margin-top:6px}
   .cnote .ser{font-family:'JetBrains Mono';font-style:normal;font-size:10.5px;color:var(--brass);letter-spacing:.5px}
   .spark{width:100%;height:40px;margin:4px 0;display:block}
   .histnote{font-size:9.5px;color:var(--mut);font-family:'JetBrains Mono';letter-spacing:.5px;text-transform:uppercase}
@@ -335,6 +341,12 @@
   <label>Purchase date <span style="text-transform:none;letter-spacing:0;color:var(--mut)">(optional)</span></label><input id="f_pdate" type="date">
   <label>Serial / cert no. <span style="text-transform:none;letter-spacing:0;color:var(--mut)">(optional)</span></label><input id="f_serial" placeholder="PSA cert, VIN, edition #…">
   <label>Notes <span style="text-transform:none;letter-spacing:0;color:var(--mut)">(optional)</span></label><input id="f_notes" placeholder="Condition, storage location, provenance…">
+  <label>Photo <span style="text-transform:none;letter-spacing:0;color:var(--mut)">(optional · for your records &amp; insurance)</span></label>
+  <div class="photofield">
+    <img id="f_photoPreview" class="photoprev" style="display:none" alt="">
+    <input id="f_photo" type="file" accept="image/*" onchange="previewPhoto(event)">
+    <button type="button" id="f_photoClear" class="photoclear" style="display:none" onclick="clearPhoto()">Remove photo</button>
+  </div>
   <div class="hint">For trading cards, scan the card on CardGauge to get a price, then enter it here.</div>
   <div class="mrow"><button class="cancel" onclick="closeAdd()">Cancel</button><button class="save" onclick="saveItem()">Record</button></div>
 </div></div>
@@ -375,9 +387,9 @@ let user=null;
 let items=[], filter="All", editId=null, updId=null, soldId=null, view="grid", lastTotal=0;
 
 // map a DB row to the app's item shape (app uses i.val/i.paid/i.soldPrice/i.soldDate)
-function rowToItem(r){return {id:r.id,cat:r.cat,name:r.name,paid:+r.paid||0,val:+r.val||0,pdate:r.pdate||"",serial:r.serial||"",notes:r.notes||"",hist:r.hist||[],sold:!!r.sold,soldPrice:r.sold_price==null?undefined:+r.sold_price,soldDate:r.sold_date||undefined};}
+function rowToItem(r){return {id:r.id,cat:r.cat,name:r.name,paid:+r.paid||0,val:+r.val||0,pdate:r.pdate||"",serial:r.serial||"",notes:r.notes||"",hist:r.hist||[],sold:!!r.sold,soldPrice:r.sold_price==null?undefined:+r.sold_price,soldDate:r.sold_date||undefined,photo:r.photo||""};}
 // map an app item to a DB row (include user_id)
-function itemToRow(i){return {id:i.id,user_id:user.id,cat:i.cat,name:i.name,paid:+i.paid||0,val:+i.val||0,pdate:i.pdate||"",serial:i.serial||"",notes:i.notes||"",hist:i.hist||[],sold:!!i.sold,sold_price:i.sold==null?null:(i.soldPrice==null?null:+i.soldPrice),sold_date:i.soldDate||null};}
+function itemToRow(i){return {id:i.id,user_id:user.id,cat:i.cat,name:i.name,paid:+i.paid||0,val:+i.val||0,pdate:i.pdate||"",serial:i.serial||"",notes:i.notes||"",hist:i.hist||[],sold:!!i.sold,sold_price:i.sold==null?null:(i.soldPrice==null?null:+i.soldPrice),sold_date:i.soldDate||null,photo:i.photo||""};}
 
 // upsert one item to the cloud
 async function saveItemRow(i){if(demoMode||!user)return;try{const {error}=await sb.from("holdings").upsert(itemToRow(i));if(error)console.error("save error",error);}catch(e){console.error(e);}}
@@ -527,6 +539,7 @@ function render(){
     const shops=shopLinks(i).slice(0,2).map(([n,u])=>`<a class="mini" href="${u}" target="_blank" rel="noopener">${n}</a>`).join("");
     const soldBtn=i.sold?`<button class="mini" onclick="unsell('${i.id}')">Unsell</button>`:`<button class="mini" onclick="openSold('${i.id}')">Mark Sold</button>`;
     return `<div class="card${i.sold?' sold':''}" style="--cc:${cc}">
+      ${i.photo?`<img class="cardphoto" data-photo="${esc(i.photo)}" alt="${esc(i.name)}">`:""}
       <div class="ctop"><span class="cat-tag">${i.cat}</span><span class="glyph">${CAT_EMOJI[i.cat]}</span></div>
       <h3>${esc(i.name)}</h3><div class="meta">Acquired at ${money(i.paid)}${heldStr(i)}</div>
       ${(i.serial||i.notes)?`<div class="cnote">${i.serial?`<span class="ser">#${esc(i.serial)}</span>`:""}${(i.serial&&i.notes)?" · ":""}${i.notes?esc(i.notes):""}</div>`:""}
@@ -534,7 +547,18 @@ function render(){
       <div class="vrow"><div class="val">${money(i.sold&&+i.soldPrice>0?i.soldPrice:i.val)}</div>${i.sold?"":deltaHtml}</div>
       <div class="cardacts"><button class="mini up" onclick="openUpd('${i.id}')">Revalue</button>${cardLink}</div>
       <div class="cardacts">${shops}<button class="mini" onclick="openEdit('${i.id}')">Edit</button>${soldBtn}<button class="mini" onclick="del('${i.id}')">Remove</button></div>
-    </div>`;}).join("");}
+    </div>`;}).join("");
+  fillPhotos();}
+
+// after cards render, swap in temporary signed URLs for any private photos
+async function fillPhotos(){
+  const imgs=document.querySelectorAll('img.cardphoto[data-photo]');
+  for(const el of imgs){
+    const path=el.getAttribute('data-photo');if(!path)continue;
+    const u=await signedUrl(path);
+    if(u)el.src=u;else el.style.display="none";
+  }
+}
 
 function renderTable(show){
   if(show.length===0){$("tablewrap").innerHTML=`<table class="htable"></table>`;$("htable")&&($("htable").innerHTML="");
@@ -681,15 +705,62 @@ function printStatement(){
   </body></html>`);
   win.document.close();
 }
-function openAdd(){editId=null;$("mtitle").textContent="Add Holding";$("f_cat").selectedIndex=0;$("f_name").value="";$("f_paid").value="";$("f_val").value="";$("f_pdate").value="";$("f_serial").value="";$("f_notes").value="";$("ov").classList.add("show");}
-function openEdit(id){const i=items.find(x=>x.id===id);if(!i)return;editId=id;$("mtitle").textContent="Edit Holding";$("f_cat").value=CAT_EMOJI[i.cat]+" "+i.cat;$("f_name").value=i.name;$("f_paid").value=i.paid;$("f_val").value=i.val;$("f_pdate").value=i.pdate||"";$("f_serial").value=i.serial||"";$("f_notes").value=i.notes||"";$("ov").classList.add("show");}
-function closeAdd(){$("ov").classList.remove("show");}
+function openAdd(){editId=null;$("mtitle").textContent="Add Holding";$("f_cat").selectedIndex=0;$("f_name").value="";$("f_paid").value="";$("f_val").value="";$("f_pdate").value="";$("f_serial").value="";$("f_notes").value="";resetPhotoField("");$("ov").classList.add("show");}
+function openEdit(id){const i=items.find(x=>x.id===id);if(!i)return;editId=id;$("mtitle").textContent="Edit Holding";$("f_cat").value=CAT_EMOJI[i.cat]+" "+i.cat;$("f_name").value=i.name;$("f_paid").value=i.paid;$("f_val").value=i.val;$("f_pdate").value=i.pdate||"";$("f_serial").value=i.serial||"";$("f_notes").value=i.notes||"";resetPhotoField(i.photo||"");$("ov").classList.add("show");}
+function closeAdd(){$("ov").classList.remove("show");pendingPhotoBlob=null;}
+
+// --- Photo handling ---
+let pendingPhotoBlob=null;        // compressed image waiting to upload
+let pendingPhotoRemoved=false;    // user cleared an existing photo
+function resetPhotoField(existingPath){
+  pendingPhotoBlob=null;pendingPhotoRemoved=false;
+  const f=$("f_photo");if(f)f.value="";
+  const prev=$("f_photoPreview"),clr=$("f_photoClear");
+  if(existingPath){ // show existing photo via signed URL
+    signedUrl(existingPath).then(u=>{if(u){prev.src=u;prev.style.display="block";clr.style.display="inline";}});
+  } else {prev.style.display="none";prev.src="";clr.style.display="none";}
+}
+function clearPhoto(){pendingPhotoBlob=null;pendingPhotoRemoved=true;$("f_photo").value="";$("f_photoPreview").style.display="none";$("f_photoPreview").src="";$("f_photoClear").style.display="none";}
+function previewPhoto(ev){
+  const file=ev.target.files&&ev.target.files[0];if(!file)return;
+  const img=new Image();const reader=new FileReader();
+  reader.onload=e=>{img.onload=()=>{
+    // compress: cap longest side ~1200px, JPEG ~0.7
+    const max=1200;let{width:w,height:h}=img;
+    if(w>h&&w>max){h=h*max/w;w=max;}else if(h>max){w=w*max/h;h=max;}
+    const c=document.createElement("canvas");c.width=w;c.height=h;
+    c.getContext("2d").drawImage(img,0,0,w,h);
+    c.toBlob(b=>{pendingPhotoBlob=b;pendingPhotoRemoved=false;
+      $("f_photoPreview").src=URL.createObjectURL(b);$("f_photoPreview").style.display="block";$("f_photoClear").style.display="inline";
+    },"image/jpeg",0.7);
+  };img.src=e.target.result;};
+  reader.readAsDataURL(file);
+}
+// get a temporary viewable URL for a private photo
+async function signedUrl(path){if(!path)return null;try{const {data,error}=await sb.storage.from("item-photos").createSignedUrl(path,3600);if(error){console.error(error);return null;}return data.signedUrl;}catch(e){console.error(e);return null;}}
+
 function saveItem(){const name=$("f_name").value.trim();if(!name){$("f_name").focus();return;}
   const cat=$("f_cat").value.replace(/^\S+\s/,""),paid=+$("f_paid").value||0,val=+$("f_val").value||0,pdate=$("f_pdate").value||"",serial=$("f_serial").value.trim(),notes=$("f_notes").value.trim();
   let target;
   if(editId){const i=items.find(x=>x.id===editId);i.cat=cat;i.name=name;i.paid=paid;i.pdate=pdate;i.serial=serial;i.notes=notes;if(val!==i.val){i.val=val;(i.hist=i.hist||[]).push({d:today(),v:val});}target=i;}
-  else{target={id:(crypto.randomUUID?crypto.randomUUID():Date.now()+""+Math.random().toString(36).slice(2,10)),cat,name,paid,val,pdate,serial,notes,hist:[{d:today(),v:val}]};items.push(target);}
-  saveItemRow(target);closeAdd();render();}
+  else{target={id:(crypto.randomUUID?crypto.randomUUID():Date.now()+""+Math.random().toString(36).slice(2,10)),cat,name,paid,val,pdate,serial,notes,hist:[{d:today(),v:val}],photo:""};items.push(target);}
+  finishSave(target);}
+
+async function finishSave(target){
+  // handle photo: upload new, or clear existing
+  if(pendingPhotoBlob && user && !demoMode){
+    const path=`${user.id}/${target.id}.jpg`;
+    try{
+      const {error}=await sb.storage.from("item-photos").upload(path,pendingPhotoBlob,{upsert:true,contentType:"image/jpeg"});
+      if(error)console.error("photo upload",error);else target.photo=path;
+    }catch(e){console.error(e);}
+  } else if(pendingPhotoRemoved){
+    if(target.photo && user && !demoMode){try{await sb.storage.from("item-photos").remove([target.photo]);}catch(e){console.error(e);}}
+    target.photo="";
+  }
+  pendingPhotoBlob=null;pendingPhotoRemoved=false;
+  saveItemRow(target);closeAdd();render();
+}
 function del(id){if(confirm("Remove this holding?")){items=items.filter(i=>i.id!==id);deleteItemRow(id);render();}}
 function openUpd(id){const i=items.find(x=>x.id===id);if(!i)return;updId=id;$("u_name").textContent=i.name;$("u_val").value=i.val;drawBig(i);$("ovu").classList.add("show");}
 function closeUpd(){$("ovu").classList.remove("show");}
