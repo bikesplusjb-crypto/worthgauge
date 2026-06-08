@@ -178,6 +178,28 @@
   .wel-step span{color:var(--ink2);font-size:12.5px;line-height:1.5}
   .wel-cta{background:var(--brass);color:#fff;border:none;padding:14px 28px;border-radius:4px;font-family:'Inter';font-weight:600;font-size:13.5px;letter-spacing:.5px;cursor:pointer;transition:.25s;box-shadow:0 8px 24px -10px rgba(154,123,63,.7)}
   .wel-cta:hover{background:var(--navy);transform:translateY(-1px)}
+  .plusmodal{text-align:center;max-width:440px}
+  .plus-badge{display:inline-block;font-family:'JetBrains Mono';font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);border:1px solid var(--brass);border-radius:20px;padding:5px 14px;margin-bottom:16px}
+  .plus-h{font-family:'Cormorant Garamond';font-weight:500;font-size:30px;color:var(--navy)}
+  .plus-sub{color:var(--ink2);font-size:13.5px;line-height:1.6;margin:10px auto 20px;max-width:360px}
+  .plus-feats{list-style:none;text-align:left;max-width:380px;margin:0 auto 22px;padding:0}
+  .plus-feats li{font-size:13px;color:var(--ink2);line-height:1.5;padding:9px 0 9px 24px;position:relative;border-bottom:1px solid var(--line)}
+  .plus-feats li:last-child{border-bottom:none}
+  .plus-feats li::before{content:"◆";position:absolute;left:0;top:11px;color:var(--brass);font-size:10px}
+  .plus-feats b{color:var(--ink);font-weight:500}
+  .plus-price{margin:6px 0 18px}
+  .plus-amt{font-family:'Cormorant Garamond';font-weight:600;font-size:42px;color:var(--navy)}
+  .plus-per{display:block;font-family:'JetBrains Mono';font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);margin-top:2px}
+  .plus-cta{width:100%;padding:15px;background:var(--brass);color:#fff;border:none;border-radius:4px;font-family:'Inter';font-weight:600;font-size:14px;letter-spacing:.5px;cursor:pointer;transition:.25s;box-shadow:0 10px 28px -10px rgba(154,123,63,.7)}
+  .plus-cta:hover{background:var(--navy);transform:translateY(-1px)}
+  .plus-note{font-size:11px;color:var(--mut);margin-top:12px;font-style:italic;font-family:'Cormorant Garamond';font-size:12.5px}
+  .plus-close{background:none;border:none;color:var(--mut);font-family:'Inter';font-size:12px;margin-top:14px;cursor:pointer;text-decoration:underline}
+  .plus-codebox{display:flex;gap:8px;margin-top:14px}
+  .plus-codebox input{flex:1;background:var(--paper);border:1px solid var(--line2);color:var(--ink);padding:12px 14px;border-radius:4px;font-family:'Inter';font-size:14px;text-align:center;letter-spacing:1px;text-transform:uppercase}
+  .plus-codebox input:focus{outline:none;border-color:var(--brass)}
+  .plus-codebtn{background:var(--navy);color:var(--paper);border:none;border-radius:4px;padding:0 20px;font-family:'Inter';font-weight:500;font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+  .plus-codebtn:hover{background:var(--brass)}
+  .lockbadge{display:inline-block;font-family:'JetBrains Mono';font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--brass);border:1px solid var(--brass);border-radius:10px;padding:1px 6px;margin-left:6px;vertical-align:middle}
   .cnote .ser{font-family:'JetBrains Mono';font-style:normal;font-size:10.5px;color:var(--brass);letter-spacing:.5px}
   .spark{width:100%;height:40px;margin:4px 0;display:block}
   .histnote{font-size:9.5px;color:var(--mut);font-family:'JetBrains Mono';letter-spacing:.5px;text-transform:uppercase}
@@ -320,7 +342,7 @@
     </div>
     <label class="soldtoggle"><input type="checkbox" id="showSold" onchange="render()"> Show sold</label>
     <button class="exportbtn" onclick="exportCSV()">↓ Export CSV</button>
-    <button class="exportbtn" onclick="printStatement()">📄 Insurance Statement</button>
+    <button class="exportbtn" onclick="printStatement()">📄 Insurance Statement<span class="lockbadge" id="stmtBadge">Plus</span></button>
   </div>
 
   <div class="storenote">
@@ -378,6 +400,34 @@
   <div class="mrow"><button class="cancel" onclick="closeUpd()">Close</button><button class="save" onclick="saveUpd()">Record</button></div>
 </div></div>
 
+<!-- Plus upgrade modal (MOCKUP) -->
+<div class="ov" id="ovplus"><div class="modal plusmodal">
+  <div class="plus-badge">WorthGauge Plus</div>
+  <h2 class="plus-h">Protect your collection</h2>
+  <div class="plus-sub">Turn your collection into an insurance-ready record with photographic proof of every item.</div>
+  <ul class="plus-feats">
+    <li><b>Photo insurance statements</b> — a professional PDF with an image of every holding, ready for your insurer or a claim</li>
+    <li><b>Unlimited photos</b> — document condition, serials, and provenance for everything you own</li>
+    <li><b>Priority access</b> to new features as they launch</li>
+  </ul>
+  <div class="plus-price">
+    <span class="plus-amt">$19</span><span class="plus-per">one-time · lifetime access</span>
+  </div>
+  <a class="plus-cta" href="https://buymeacoffee.com/cardgaugejg" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">Support &amp; Unlock — then enter your code below</a>
+  <div class="plus-codebox">
+    <input id="plusCode" type="text" placeholder="Enter your unlock code" autocomplete="off">
+    <button class="plus-codebtn" onclick="applyCode()">Unlock</button>
+  </div>
+  <div id="plusCodeMsg" class="authmsg" style="margin-top:8px"></div>
+  <div class="plus-note">After supporting, you'll receive an unlock code. Enter it above to activate Plus on your account.</div>
+  <button class="plus-close" onclick="closeUpgrade()">Maybe later</button>
+</div></div>
+
+<script>
+function openUpgrade(){$("ovplus").classList.add("show");}
+function closeUpgrade(){$("ovplus").classList.remove("show");}
+</script>
+
 <script>
 const CATS=["Trading Cards","Sneakers","Watches","Cars","Coins","Comics","Toys","Video Games","Stamps","Art & Prints","Vinyl Records","Jewelry","Antiques","Memorabilia","Wine & Spirits","LEGO Sets","Bags & Fashion","Other"];
 const CAT_EMOJI={"Trading Cards":"🃏","Sneakers":"👟","Watches":"⌚","Cars":"🚗","Coins":"🪙","Comics":"📚","Toys":"🧸","Video Games":"🎮","Stamps":"📮","Art & Prints":"🖼️","Vinyl Records":"💿","Jewelry":"💎","Antiques":"🏺","Memorabilia":"🏆","Wine & Spirits":"🍷","LEGO Sets":"🧱","Bags & Fashion":"👜","Other":"📦"};
@@ -431,6 +481,38 @@ async function signOut(){await sb.auth.signOut();user=null;items=[];location.rel
 
 // Demo mode: explore a sample collection with no account. Read-only feel; changes are not saved.
 let demoMode=false;
+// --- MOCKUP premium state (not real billing; front-end prototype only) ---
+let isPlus=false;
+const PLUS_CODE="WGPLUS2026"; // the unlock code given to BMAC supporters
+
+// load this user's Plus status from their profile (creates row if missing)
+async function loadPlus(){
+  if(!user){isPlus=false;return;}
+  try{
+    let {data,error}=await sb.from("profiles").select("is_plus").eq("id",user.id).maybeSingle();
+    if(error){console.error(error);}
+    if(!data){ // create a profile row on first sign-in
+      await sb.from("profiles").insert({id:user.id,is_plus:false});
+      isPlus=false;
+    } else { isPlus=!!data.is_plus; }
+  }catch(e){console.error(e);isPlus=false;}
+}
+
+// redeem the unlock code -> save Plus to the user's profile
+async function applyCode(){
+  const entered=($("plusCode").value||"").trim().toUpperCase();
+  const msg=$("plusCodeMsg");
+  if(!entered){msg.className="authmsg err";msg.textContent="Enter the code from your support confirmation.";return;}
+  if(entered!==PLUS_CODE){msg.className="authmsg err";msg.textContent="That code isn't valid. Check the message from your support confirmation.";return;}
+  if(!user){msg.className="authmsg err";msg.textContent="Please sign in first.";return;}
+  msg.className="authmsg";msg.textContent="Unlocking…";
+  try{
+    const {error}=await sb.from("profiles").upsert({id:user.id,is_plus:true});
+    if(error){msg.className="authmsg err";msg.textContent="Something went wrong. Try again.";return;}
+    isPlus=true;closeUpgrade();render();
+    setTimeout(()=>alert("✓ WorthGauge Plus unlocked. Thank you for your support!"),100);
+  }catch(e){msg.className="authmsg err";msg.textContent="Something went wrong. Try again.";}
+}
 function startDemo(){
   demoMode=true;
   items=[
@@ -453,13 +535,13 @@ function showApp(loggedIn){
 // react to auth state (handles the magic-link return + page loads)
 sb.auth.onAuthStateChange((_e,session)=>{
   user=session?.user||null;
-  if(user){showApp(true);loadCloud();}
+  if(user){showApp(true);loadPlus().then(loadCloud);}
   else{showApp(false);}
 });
 // initial check
 sb.auth.getSession().then(({data})=>{
   user=data.session?.user||null;
-  if(user){showApp(true);loadCloud();}else{showApp(false);}
+  if(user){showApp(true);loadPlus().then(loadCloud);}else{showApp(false);}
 });
 const $=id=>document.getElementById(id);
 const money=n=>"$"+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:0});
@@ -489,6 +571,7 @@ function drawDonut(){const svg=$("donut");const by={};items.forEach(i=>by[i.cat]
   svg.innerHTML=html;}
 
 function render(){
+  const _b=document.getElementById("stmtBadge");if(_b)_b.style.display=isPlus?"none":"inline-block";
   const active=items.filter(i=>!i.sold);
   const totVal=active.reduce((s,i)=>s+(+i.val||0),0),totPaid=active.reduce((s,i)=>s+(+i.paid||0),0),diff=totVal-totPaid;
   countUp($("total"),totVal);
@@ -670,11 +753,14 @@ function exportCSV(){
 async function printStatement(){
   const active=items.filter(i=>!i.sold);
   if(active.length===0){alert("Add holdings before generating a statement.");return;}
+  // MOCKUP gate: if any holding has a photo and user isn't Plus, offer the upgrade
+  const anyPhotos=active.some(i=>i.photo);
+  if(anyPhotos && !isPlus && !demoMode){openUpgrade();return;}
   const d=new Date(), ds=d.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
   const totVal=active.reduce((s,i)=>s+(+i.val||0),0);
-  // pre-fetch signed URLs for any photos so they can embed in the statement
+  // pre-fetch signed URLs for any photos so they can embed in the statement (Plus only)
   const photoMap={};
-  for(const i of active){if(i.photo){const u=await signedUrl(i.photo);if(u)photoMap[i.id]=u;}}
+  if(isPlus||demoMode){for(const i of active){if(i.photo){const u=await signedUrl(i.photo);if(u)photoMap[i.id]=u;}}}
   const hasPhotos=Object.keys(photoMap).length>0;
   // group by category
   const by={};active.forEach(i=>{(by[i.cat]=by[i.cat]||[]).push(i);});
