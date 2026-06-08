@@ -653,7 +653,7 @@ function render(){
       ${sparkline(i.hist,256,40)}${note}
       <div class="vrow"><div class="val">${money(i.sold&&+i.soldPrice>0?i.soldPrice:i.val)}</div>${i.sold?"":deltaHtml}</div>
       <div class="cardacts"><button class="mini up" onclick="openUpd('${i.id}')">Revalue</button>${cardLink}</div>
-      <div class="cardacts">${shops}<button class="mini" onclick="openEdit('${i.id}')">Edit</button>${soldBtn}<button class="mini" onclick="del('${i.id}')">Remove</button></div>
+      <div class="cardacts">${shops}<button class="mini" onclick="openEdit('${i.id}')">Edit</button>${soldBtn}<button class="mini" onclick="proofItem('${i.id}')">📄 Proof</button><button class="mini" onclick="del('${i.id}')">Remove</button></div>
     </div>`;}).join("");
   fillPhotos();}
 
@@ -810,7 +810,40 @@ async function printStatement(){
     .sign{margin-top:34px;display:flex;justify-content:space-between;gap:40px}
     .sign div{flex:1;border-top:1px solid #1a2232;padding-top:6px;font-size:10px;color:#8a8578;font-family:'JetBrains Mono';text-transform:uppercase;letter-spacing:1px}
     @media print{body{padding:20px}.noprint{display:none}}
+    .pagebreak{page-break-after:always}
+    .coversheet{max-width:600px;margin:40px auto 0;text-align:center;padding:20px}
+    .cs-seal{width:64px;height:64px;margin:0 auto 20px;border:1.5px solid #9a7b3f;border-radius:50%;display:grid;place-items:center;font-family:'Cormorant Garamond';font-weight:600;font-size:26px;color:#9a7b3f}
+    .cs-title{font-family:'Cormorant Garamond';font-weight:500;font-size:34px;color:#1a2740;letter-spacing:.5px}
+    .cs-sub{font-family:'JetBrains Mono';font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#8a8578;margin-top:8px}
+    .cs-rule{width:60px;height:2px;background:#9a7b3f;margin:24px auto}
+    .cs-meta{width:100%;max-width:440px;margin:0 auto;border-collapse:collapse;text-align:left}
+    .cs-meta td{padding:12px 6px;border-bottom:1px solid #e4ddcf;font-size:13px}
+    .cs-k{font-family:'JetBrains Mono';font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8a8578;width:48%}
+    .cs-v{color:#1a2232}
+    .cs-fill{border-bottom:1px solid #1a2232}
+    .cs-note{font-size:11.5px;line-height:1.6;color:#5a5448;max-width:440px;margin:28px auto 0;text-align:left;font-style:italic;font-family:'Cormorant Garamond';font-size:14px}
+    .cs-sign{display:flex;justify-content:space-between;gap:40px;max-width:440px;margin:48px auto 0}
+    .cs-sign div{flex:1;border-top:1px solid #1a2232;padding-top:6px;font-size:10px;color:#8a8578;font-family:'JetBrains Mono';text-transform:uppercase;letter-spacing:1px}
+    .cs-foot{font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#b5ac98;margin-top:60px}
   </style></head><body>
+    <div class="coversheet">
+      <div class="cs-seal">WG</div>
+      <div class="cs-title">Schedule of Insured Items</div>
+      <div class="cs-sub">WorthGauge · Collection Documentation</div>
+      <div class="cs-rule"></div>
+      <table class="cs-meta">
+        <tr><td class="cs-k">Statement Date</td><td class="cs-v">${ds}</td></tr>
+        <tr><td class="cs-k">Total Items</td><td class="cs-v">${active.length}</td></tr>
+        <tr><td class="cs-k">Total Declared Value</td><td class="cs-v"><b>${money(totVal)}</b></td></tr>
+        <tr><td class="cs-k">Holder Name</td><td class="cs-v cs-fill">&nbsp;</td></tr>
+        <tr><td class="cs-k">Policy / Reference No.</td><td class="cs-v cs-fill">&nbsp;</td></tr>
+        <tr><td class="cs-k">Insurer / Agent</td><td class="cs-v cs-fill">&nbsp;</td></tr>
+      </table>
+      <div class="cs-note">This schedule documents the items listed on the following pages, each with the holder's own records of value, acquisition, identifying marks, and photographs where provided. It is intended to accompany an insurance policy or claim as the holder's record of owned items.</div>
+      <div class="cs-sign"><div>Holder signature</div><div>Date</div></div>
+      <div class="cs-foot">WorthGauge · worthgauge.com</div>
+    </div>
+    <div class="pagebreak"></div>
     <div class="head"><div class="seal">WG</div><h1>Collection Statement</h1><div class="est">WorthGauge · Private Wealth Index</div></div>
     <div class="meta"><span>Statement date: ${ds}</span><span>${active.length} holdings</span></div>
     <table>
@@ -824,7 +857,57 @@ async function printStatement(){
   </body></html>`);
   win.document.close();
 }
-function openAdd(){editId=null;$("mtitle").textContent="Add Holding";$("f_cat").selectedIndex=0;$("f_name").value="";$("f_paid").value="";$("f_val").value="";$("f_pdate").value="";$("f_serial").value="";$("f_notes").value="";resetPhotoField("");$("ov").classList.add("show");}
+
+// Per-item proof-of-ownership packet (Plus feature)
+async function proofItem(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  // Plus gate (same model as the statement): if not Plus and not demo, offer upgrade
+  if(!isPlus && !demoMode){openUpgrade();return;}
+  let photoUrl="";
+  if(i.photo){const u=await signedUrl(i.photo);if(u)photoUrl=u;}
+  const d=new Date(), ds=d.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+  const heldTxt=i.pdate?i.pdate:"—";
+  const rows=[
+    ["Category",esc(i.cat)],
+    ["Acquisition Cost",i.paid>0?money(i.paid):"—"],
+    ["Declared Value",money(i.val)],
+    ["Purchase Date",heldTxt],
+    ["Serial / Cert No.",i.serial?esc(i.serial):"—"],
+    ["Notes",i.notes?esc(i.notes):"—"]
+  ].map(([k,v])=>`<tr><td class="pk">${k}</td><td class="pv">${v}</td></tr>`).join("");
+  const win=window.open("","_blank");
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>WorthGauge — Proof of Ownership</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a2232;padding:48px 44px;max-width:720px;margin:0 auto;font-size:13px}
+    .ph{text-align:center;border-bottom:2px solid #1a2740;padding-bottom:18px;margin-bottom:24px}
+    .ph .seal{width:50px;height:50px;margin:0 auto 12px;border:1.5px solid #9a7b3f;border-radius:50%;display:grid;place-items:center;font-family:'Cormorant Garamond';font-weight:600;font-size:19px;color:#9a7b3f}
+    .ph h1{font-family:'Cormorant Garamond';font-weight:500;font-size:26px;color:#1a2740}
+    .ph .est{font-family:'JetBrains Mono';font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#8a8578;margin-top:6px}
+    .pname{font-family:'Cormorant Garamond';font-size:24px;font-weight:600;color:#1a2740;text-align:center;margin-bottom:20px}
+    .pphoto{display:block;max-width:340px;max-height:340px;margin:0 auto 24px;border:1px solid #ddd6c8;border-radius:4px}
+    .ptable{width:100%;max-width:480px;margin:0 auto;border-collapse:collapse}
+    .ptable td{padding:11px 8px;border-bottom:1px solid #eee6d8;vertical-align:top}
+    .pk{font-family:'JetBrains Mono';font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8a8578;width:42%}
+    .pv{color:#1a2232;font-size:14px}
+    .pdisc{font-size:11px;line-height:1.6;color:#5a5448;max-width:480px;margin:28px auto 0;font-style:italic;font-family:'Cormorant Garamond';font-size:13px}
+    .psign{display:flex;justify-content:space-between;gap:40px;max-width:480px;margin:36px auto 0}
+    .psign div{flex:1;border-top:1px solid #1a2232;padding-top:6px;font-size:10px;color:#8a8578;font-family:'JetBrains Mono';text-transform:uppercase;letter-spacing:1px}
+    .noprint{text-align:center;margin-top:30px}
+    @media print{body{padding:20px}.noprint{display:none}}
+  </style></head><body>
+    <div class="ph"><div class="seal">WG</div><h1>Proof of Ownership</h1><div class="est">WorthGauge · Item Record · ${ds}</div></div>
+    <div class="pname">${esc(i.name)}</div>
+    ${photoUrl?`<img class="pphoto" src="${photoUrl}" alt="">`:""}
+    <table class="ptable">${rows}</table>
+    <div class="pdisc"><b>Notice.</b> The value shown is self-reported by the holder as of the date above and is not an independent appraisal or certification. This document is the holder's own record of the item for insurance and reference purposes.</div>
+    <div class="psign"><div>Holder signature</div><div>Date</div></div>
+    <div class="noprint"><button onclick="window.print()" style="padding:11px 22px;background:#1a2740;color:#fff;border:none;border-radius:4px;font-family:Inter;font-weight:500;letter-spacing:1px;text-transform:uppercase;font-size:12px;cursor:pointer">Print / Save as PDF</button></div>
+  </body></html>`);
+  win.document.close();
+}
+
 function openEdit(id){const i=items.find(x=>x.id===id);if(!i)return;editId=id;$("mtitle").textContent="Edit Holding";$("f_cat").value=CAT_EMOJI[i.cat]+" "+i.cat;$("f_name").value=i.name;$("f_paid").value=i.paid;$("f_val").value=i.val;$("f_pdate").value=i.pdate||"";$("f_serial").value=i.serial||"";$("f_notes").value=i.notes||"";resetPhotoField(i.photo||"");$("ov").classList.add("show");}
 function closeAdd(){$("ov").classList.remove("show");pendingPhotoBlob=null;}
 
