@@ -167,6 +167,17 @@
   .photoclear{background:none;border:none;color:var(--red);font-family:'Inter';font-size:11px;cursor:pointer;margin-top:6px;text-decoration:underline}
   .cardphoto{width:100%;height:150px;object-fit:cover;border-radius:4px 4px 0 0;display:block;border-bottom:1px solid var(--line)}
   .photobusy{font-family:'JetBrains Mono';font-size:10px;color:var(--brass);letter-spacing:1px;text-transform:uppercase;margin-top:6px}
+  .welcome{grid-column:1/-1;text-align:center;padding:40px 24px;background:var(--card);border:1px solid var(--line2);border-top:2px solid var(--brass);border-radius:6px}
+  .wel-seal{font-family:'Cormorant Garamond';font-weight:600;font-size:26px;color:var(--brass);letter-spacing:2px;border:1px solid var(--brass);width:62px;height:62px;line-height:60px;border-radius:50%;margin:0 auto 18px}
+  .wel-title{font-family:'Cormorant Garamond';font-weight:500;font-size:28px;color:var(--navy);margin-bottom:8px}
+  .wel-sub{color:var(--ink2);font-size:14px;line-height:1.6;max-width:440px;margin:0 auto 28px}
+  .wel-steps{display:grid;gap:16px;max-width:460px;margin:0 auto 28px;text-align:left}
+  .wel-step{display:flex;gap:14px;align-items:flex-start}
+  .wel-num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--navy);color:var(--paper);font-family:'JetBrains Mono';font-size:13px;display:flex;align-items:center;justify-content:center}
+  .wel-step b{display:block;color:var(--ink);font-size:14px;margin-bottom:2px}
+  .wel-step span{color:var(--ink2);font-size:12.5px;line-height:1.5}
+  .wel-cta{background:var(--brass);color:#fff;border:none;padding:14px 28px;border-radius:4px;font-family:'Inter';font-weight:600;font-size:13.5px;letter-spacing:.5px;cursor:pointer;transition:.25s;box-shadow:0 8px 24px -10px rgba(154,123,63,.7)}
+  .wel-cta:hover{background:var(--navy);transform:translateY(-1px)}
   .cnote .ser{font-family:'JetBrains Mono';font-style:normal;font-size:10.5px;color:var(--brass);letter-spacing:.5px}
   .spark{width:100%;height:40px;margin:4px 0;display:block}
   .histnote{font-size:9.5px;color:var(--mut);font-family:'JetBrains Mono';letter-spacing:.5px;text-transform:uppercase}
@@ -517,7 +528,20 @@ function render(){
 
   if(view==="table"){renderTable(show);$("grid").style.display="none";$("tablewrap").style.display="";return;}
   $("tablewrap").style.display="none";$("grid").style.display="";
-  if(show.length===0){$("grid").innerHTML=`<div class="empty">${q?"No holdings match your search.":"Your schedule of holdings is presently empty."}</div>`;return;}
+  if(show.length===0){
+    if(q){$("grid").innerHTML=`<div class="empty">No holdings match your search.</div>`;return;}
+    $("grid").innerHTML=`<div class="welcome">
+      <div class="wel-seal">WG</div>
+      <h3 class="wel-title">Welcome to your collection</h3>
+      <p class="wel-sub">WorthGauge is your private index of everything you own and what it's worth. Here's how it works:</p>
+      <div class="wel-steps">
+        <div class="wel-step"><span class="wel-num">1</span><div><b>Add a holding</b><span>Tap <i>+ Add Holding</i> and enter any collectible — a card, watch, sneaker, coin, anything.</span></div></div>
+        <div class="wel-step"><span class="wel-num">2</span><div><b>Log its value &amp; a photo</b><span>Record what you paid and what it's worth now. Add a photo for your records and insurance.</span></div></div>
+        <div class="wel-step"><span class="wel-num">3</span><div><b>Track it over time</b><span>Update values as they change — WorthGauge charts your gains like a stock portfolio.</span></div></div>
+        <div class="wel-step"><span class="wel-num">4</span><div><b>Document &amp; export</b><span>Generate an insurance statement or export a full CSV record anytime.</span></div></div>
+      </div>
+      <button class="wel-cta" onclick="openAdd()">+ Add Your First Holding</button>
+    </div>`;return;}
   $("grid").innerHTML=show.map(i=>{
     const cc=CAT_COLOR[i.cat]||"#888";
     const d=(+i.val||0)-(+i.paid||0),pct=(+i.paid>0)?((d/+i.paid)*100).toFixed(1):null,cls=d>=0?"pos":"neg",s=d>=0?"+":"";
@@ -643,27 +667,33 @@ function exportCSV(){
   const blob=new Blob([csv],{type:"text/csv"}),url=URL.createObjectURL(blob),a=document.createElement("a");
   a.href=url;a.download="worthgauge-collection.csv";a.click();URL.revokeObjectURL(url);
 }
-function printStatement(){
+async function printStatement(){
   const active=items.filter(i=>!i.sold);
   if(active.length===0){alert("Add holdings before generating a statement.");return;}
   const d=new Date(), ds=d.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
   const totVal=active.reduce((s,i)=>s+(+i.val||0),0);
+  // pre-fetch signed URLs for any photos so they can embed in the statement
+  const photoMap={};
+  for(const i of active){if(i.photo){const u=await signedUrl(i.photo);if(u)photoMap[i.id]=u;}}
+  const hasPhotos=Object.keys(photoMap).length>0;
   // group by category
   const by={};active.forEach(i=>{(by[i.cat]=by[i.cat]||[]).push(i);});
   let body="",cats=Object.keys(by).sort((a,b)=>by[b].reduce((s,i)=>s+(+i.val||0),0)-by[a].reduce((s,i)=>s+(+i.val||0),0));
   cats.forEach(cat=>{
     const sub=by[cat].reduce((s,i)=>s+(+i.val||0),0);
-    body+=`<tr class="cathead"><td colspan="5">${esc(cat)}</td></tr>`;
+    body+=`<tr class="cathead"><td colspan="6">${esc(cat)}</td></tr>`;
     by[cat].forEach(i=>{
+      const ph=photoMap[i.id]?`<img class="thumb" src="${photoMap[i.id]}" alt="">`:`<span class="nothumb">—</span>`;
       body+=`<tr>
+        <td class="pc">${ph}</td>
         <td>${esc(i.name)}</td>
         <td class="c">${i.serial?esc(i.serial):"—"}</td>
         <td class="c">${i.pdate||"—"}</td>
         <td class="n">${i.paid>0?money(i.paid):"—"}</td>
         <td class="n">${money(i.val)}</td></tr>`;
-      if(i.notes)body+=`<tr class="noterow"><td colspan="5">${esc(i.notes)}</td></tr>`;
+      if(i.notes)body+=`<tr class="noterow"><td></td><td colspan="5">${esc(i.notes)}</td></tr>`;
     });
-    body+=`<tr class="subrow"><td colspan="4">${esc(cat)} subtotal</td><td class="n">${money(sub)}</td></tr>`;
+    body+=`<tr class="subrow"><td colspan="5">${esc(cat)} subtotal</td><td class="n">${money(sub)}</td></tr>`;
   });
   const win=window.open("","_blank");
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>WorthGauge — Collection Statement</title>
@@ -681,6 +711,9 @@ function printStatement(){
     th.n,td.n{text-align:right;font-family:'JetBrains Mono'}
     td{padding:8px 8px;border-bottom:1px solid #eee6d8;vertical-align:top}
     td.c{font-family:'JetBrains Mono';font-size:11px;color:#3a4458}
+    td.pc{width:62px;padding:6px 8px}
+    .thumb{width:48px;height:48px;object-fit:cover;border-radius:3px;border:1px solid #ddd6c8;display:block}
+    .nothumb{color:#c9c0ad;font-family:'JetBrains Mono';font-size:11px}
     tr.cathead td{font-family:'Cormorant Garamond';font-size:16px;color:#1a2740;font-weight:600;padding-top:16px;border-bottom:none}
     tr.subrow td{font-family:'JetBrains Mono';font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#1a2740;font-weight:500;border-top:1px solid #c9c0ad;border-bottom:none}
     tr.noterow td{font-style:italic;font-family:'Cormorant Garamond';font-size:13px;color:#3a4458;padding-top:0;border-bottom:1px solid #eee6d8}
@@ -695,7 +728,7 @@ function printStatement(){
     <div class="head"><div class="seal">WG</div><h1>Collection Statement</h1><div class="est">WorthGauge · Private Wealth Index</div></div>
     <div class="meta"><span>Statement date: ${ds}</span><span>${active.length} holdings</span></div>
     <table>
-      <tr><th>Description</th><th>Serial / Cert</th><th>Acquired</th><th class="n">Cost</th><th class="n">Value</th></tr>
+      <tr><th>Photo</th><th>Description</th><th>Serial / Cert</th><th>Acquired</th><th class="n">Cost</th><th class="n">Value</th></tr>
       ${body}
     </table>
     <div class="grand"><span class="gl">Total Declared Value</span><span class="gv">${money(totVal)}</span></div>
