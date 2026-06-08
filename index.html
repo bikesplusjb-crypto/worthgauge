@@ -19,14 +19,41 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   .authov{position:fixed;inset:0;z-index:200;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px}
-  .authbox{max-width:380px;width:100%;text-align:center}
-  .authtitle{font-family:'Cormorant Garamond';font-weight:500;font-size:34px;color:var(--navy);letter-spacing:1px}
-  .authsub{color:var(--ink2);font-size:13px;line-height:1.6;margin:12px 0 22px}
-  .authov input{width:100%;background:var(--card);border:1px solid var(--line2);color:var(--ink);padding:13px 14px;border-radius:4px;font-family:'Inter';font-size:15px;text-align:center}
+  .authbox{max-width:430px;width:100%;text-align:center}
+  .authtitle{font-family:'Cormorant Garamond';font-weight:500;font-size:36px;color:var(--navy);letter-spacing:1px;line-height:1}
+  .authtag{font-family:'Cormorant Garamond';font-style:italic;font-size:18px;color:var(--brass);margin-top:6px}
+  .authpitch{color:var(--ink2);font-size:13.5px;line-height:1.6;margin:14px auto 18px;max-width:380px}
+  .authfeat{list-style:none;text-align:left;max-width:330px;margin:0 auto 22px;padding:0}
+  .authfeat li{font-size:12.5px;color:var(--ink2);padding:5px 0 5px 22px;position:relative;line-height:1.4}
+  .authfeat li::before{content:"◆";position:absolute;left:0;color:var(--brass);font-size:9px;top:7px}
+  .authcard{background:var(--card);border:1px solid var(--line2);border-top:2px solid var(--brass);border-radius:4px;padding:20px;text-align:center}
+  .authsub{color:var(--ink2);font-size:12.5px;line-height:1.5;margin-bottom:12px}
+  .authov input{width:100%;background:var(--paper);border:1px solid var(--line2);color:var(--ink);padding:13px 14px;border-radius:4px;font-family:'Inter';font-size:15px;text-align:center}
   .authov input:focus{outline:none;border-color:var(--brass)}
-  .authbtn{width:100%;margin-top:12px;padding:13px;background:var(--navy);color:var(--paper);border:none;border-radius:4px;font-family:'Inter';font-weight:500;font-size:13px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:.3s}
+  .authbtn{width:100%;margin-top:10px;padding:13px;background:var(--navy);color:var(--paper);border:none;border-radius:4px;font-family:'Inter';font-weight:500;font-size:13px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:.3s}
   .authbtn:hover{background:var(--brass)}
   .authbtn:disabled{opacity:.5;cursor:default}
+  .authdemo{background:none;border:none;color:var(--mut);font-family:'Inter';font-size:12.5px;margin-top:18px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .authdemo:hover{color:var(--navy)}
+  .demobtn{display:inline-block;width:100%;max-width:360px;margin:4px auto 20px;padding:14px 18px;background:var(--brass);color:#fff;border:none;border-radius:4px;font-family:'Inter';font-weight:600;font-size:13.5px;letter-spacing:.5px;cursor:pointer;transition:.25s;box-shadow:0 8px 24px -10px rgba(154,123,63,.7)}
+  .demobtn:hover{background:var(--navy);box-shadow:0 10px 28px -10px rgba(22,29,43,.6);transform:translateY(-1px)}
+  .demobtn-lg{margin-top:22px;font-size:14px;padding:16px 18px}
+  .demobanner{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;background:var(--navy);color:var(--paper);padding:11px 16px;border-radius:4px;margin:16px 0 0;font-size:12.5px;letter-spacing:.3px}
+  .demobanner b{color:var(--brass2)}
+  .demobanner button{background:var(--brass);color:#fff;border:none;padding:7px 14px;border-radius:3px;font-family:'Inter';font-weight:500;font-size:11.5px;letter-spacing:.5px;cursor:pointer}
+  .demobanner button:hover{background:var(--brass2);color:var(--navy)}
+  .prev{background:var(--card);border:1px solid var(--line2);border-radius:6px;padding:16px;margin:0 auto 18px;max-width:360px;box-shadow:0 10px 30px -18px rgba(22,29,43,.4)}
+  .prev-top{display:flex;flex-direction:column;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .prev-lab{font-family:'JetBrains Mono';font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--mut)}
+  .prev-tot{font-family:'Cormorant Garamond';font-weight:500;font-size:32px;color:var(--navy);line-height:1.1;margin-top:2px}
+  .prev-gain{font-family:'JetBrains Mono';font-size:11px;color:var(--green);font-weight:500}
+  .prev-rows{margin-top:10px}
+  .prev-row{display:flex;align-items:center;gap:9px;padding:6px 0;font-size:12px;text-align:left}
+  .pr-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .pr-name{flex:1;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pr-val{font-family:'JetBrains Mono';font-size:11.5px;color:var(--navy);font-weight:500}
+  .pr-up{font-family:'JetBrains Mono';font-size:10.5px;color:var(--green);width:46px;text-align:right}
+  .prev-cap{font-family:'JetBrains Mono';font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);text-align:center;margin-top:12px}
   .authmsg{margin-top:16px;font-size:12.5px;line-height:1.5;min-height:18px;color:var(--ink2)}
   .authmsg.ok{color:var(--green)} .authmsg.err{color:var(--red)}
   body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;min-height:100vh;font-weight:300;
@@ -178,20 +205,50 @@
 <!-- Login overlay -->
 <div id="authOverlay" class="authov">
   <div class="authbox">
-    <div class="seal" style="margin-bottom:18px"><svg viewBox="0 0 100 100" aria-hidden="true">
+    <div class="seal" style="margin-bottom:16px"><svg viewBox="0 0 100 100" aria-hidden="true">
       <circle cx="50" cy="50" r="47" fill="none" stroke="#9a7b3f" stroke-width="1"/>
       <circle cx="50" cy="50" r="42" fill="none" stroke="#9a7b3f" stroke-width=".5" opacity=".5"/>
       <text x="50" y="63" text-anchor="middle" font-family="Cormorant Garamond, serif" font-weight="600" font-size="42" fill="#9a7b3f" letter-spacing="-4">WG</text>
     </svg></div>
     <h2 class="authtitle">WorthGauge</h2>
-    <div class="authsub">Sign in to access your private collection. We'll email you a secure sign-in link — no password needed.</div>
-    <input id="authEmail" type="email" placeholder="you@email.com" autocomplete="email">
-    <button id="authBtn" class="authbtn" onclick="signIn()">Email me a sign-in link</button>
-    <div id="authMsg" class="authmsg"></div>
+    <div class="authtag">Know what your collection is worth.</div>
+    <div class="authpitch">A private portfolio for collectibles — track cards, watches, sneakers, coins, art, and more in one place, and watch your value grow over time.</div>
+    <button class="demobtn" onclick="startDemo()">▸ See a Live Demo Collection</button>
+    <ul class="authfeat">
+      <li>See your total collection value at a glance</li>
+      <li>Track gains &amp; losses like a stock portfolio</li>
+      <li>Log purchase prices, dates, serials &amp; notes</li>
+      <li>Synced privately across all your devices</li>
+      <li>Export records &amp; insurance statements</li>
+    </ul>
+    <div class="prev">
+      <div class="prev-top">
+        <span class="prev-lab">Total Portfolio</span>
+        <span class="prev-tot">$15,828</span>
+        <span class="prev-gain">+$5,643 (+55.4%)</span>
+      </div>
+      <div class="prev-rows">
+        <div class="prev-row"><span class="pr-dot" style="background:#161d2b"></span><span class="pr-name">Rolex Submariner</span><span class="pr-val">$13,400</span><span class="pr-up">+47%</span></div>
+        <div class="prev-row"><span class="pr-dot" style="background:#9a7b3f"></span><span class="pr-name">Charizard PSA 10</span><span class="pr-val">$340</span><span class="pr-up">+183%</span></div>
+        <div class="prev-row"><span class="pr-dot" style="background:#6b5b4a"></span><span class="pr-name">Jordan 1 Chicago</span><span class="pr-val">$520</span><span class="pr-up">+206%</span></div>
+      </div>
+      <div class="prev-cap">A glance at your dashboard</div>
+    </div>
+    <div class="authcard">
+      <div class="authsub">Sign in to start — we'll email you a secure link. No password, and it's free.</div>
+      <input id="authEmail" type="email" placeholder="you@email.com" autocomplete="email">
+      <button id="authBtn" class="authbtn" onclick="signIn()">Email me a sign-in link</button>
+      <div id="authMsg" class="authmsg"></div>
+    </div>
+    <button class="demobtn demobtn-lg" onclick="startDemo()">▸ Explore the Demo Collection — No Sign-Up</button>
   </div>
 </div>
 
 <div class="wrap">
+  <div id="demoBanner" class="demobanner" style="display:none">
+    <span>You're viewing a <b>sample collection</b> — changes won't be saved.</span>
+    <button onclick="location.reload()">Sign in to build your own →</button>
+  </div>
   <div class="topbar fade"><span>Confidential · Holder's Statement</span><span style="display:flex;gap:16px;align-items:center"><a class="premium" href="https://buymeacoffee.com/cardgaugejg" target="_blank" rel="noopener">♥ Support</a><a id="signOutLink" onclick="signOut()" style="cursor:pointer;color:var(--mut);font-family:'JetBrains Mono';font-size:10px;letter-spacing:2px;text-transform:uppercase;display:none">Sign out</a></span></div>
   <div class="doubrule"></div>
 
@@ -323,9 +380,9 @@ function rowToItem(r){return {id:r.id,cat:r.cat,name:r.name,paid:+r.paid||0,val:
 function itemToRow(i){return {id:i.id,user_id:user.id,cat:i.cat,name:i.name,paid:+i.paid||0,val:+i.val||0,pdate:i.pdate||"",serial:i.serial||"",notes:i.notes||"",hist:i.hist||[],sold:!!i.sold,sold_price:i.sold==null?null:(i.soldPrice==null?null:+i.soldPrice),sold_date:i.soldDate||null};}
 
 // upsert one item to the cloud
-async function saveItemRow(i){try{const {error}=await sb.from("holdings").upsert(itemToRow(i));if(error)console.error("save error",error);}catch(e){console.error(e);}}
+async function saveItemRow(i){if(demoMode||!user)return;try{const {error}=await sb.from("holdings").upsert(itemToRow(i));if(error)console.error("save error",error);}catch(e){console.error(e);}}
 // delete one item from the cloud
-async function deleteItemRow(id){try{const {error}=await sb.from("holdings").delete().eq("id",id);if(error)console.error("delete error",error);}catch(e){console.error(e);}}
+async function deleteItemRow(id){if(demoMode||!user)return;try{const {error}=await sb.from("holdings").delete().eq("id",id);if(error)console.error("delete error",error);}catch(e){console.error(e);}}
 // load all of this user's holdings
 async function loadCloud(){
   try{const {data,error}=await sb.from("holdings").select("*").order("created_at",{ascending:true});
@@ -348,6 +405,22 @@ async function signIn(){
   }catch(e){msg.className="authmsg err";msg.textContent="Something went wrong. Try again.";btn.disabled=false;}
 }
 async function signOut(){await sb.auth.signOut();user=null;items=[];location.reload();}
+
+// Demo mode: explore a sample collection with no account. Read-only feel; changes are not saved.
+let demoMode=false;
+function startDemo(){
+  demoMode=true;
+  items=[
+    {id:"demo1",cat:"Watches",name:"Rolex Submariner 124060",paid:9100,val:13400,pdate:"2023-06-01",hist:[{d:"2026-01-01",v:11800},{d:"2026-03-01",v:12600},{d:"2026-06-01",v:13400}]},
+    {id:"demo2",cat:"Trading Cards",name:"2018 Charizard PSA 10",paid:120,val:340,pdate:"2025-11-01",serial:"PSA 49271883",notes:"Gem mint, vault case",hist:[{d:"2026-03-01",v:240},{d:"2026-06-01",v:340}]},
+    {id:"demo3",cat:"Sneakers",name:"Jordan 1 Chicago (2015)",paid:170,val:520,pdate:"2024-03-10",hist:[{d:"2026-01-01",v:430},{d:"2026-06-01",v:520}]},
+    {id:"demo4",cat:"Art & Prints",name:"Signed Lithograph, Ed. 12/50",paid:800,val:1450,pdate:"2024-09-15",hist:[{d:"2026-01-01",v:1100},{d:"2026-06-01",v:1450}]},
+    {id:"demo5",cat:"Coins",name:"1921 Morgan Silver Dollar",paid:65,val:118,pdate:"2022-02-20",hist:[{d:"2026-02-01",v:95},{d:"2026-06-01",v:118}]}
+  ];
+  $("authOverlay").style.display="none";
+  $("demoBanner").style.display="flex";
+  render();
+}
 
 function showApp(loggedIn){
   $("authOverlay").style.display=loggedIn?"none":"flex";
