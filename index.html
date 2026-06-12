@@ -18,7 +18,8 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  .authov{position:fixed;inset:0;z-index:200;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px}
+  .authov{position:fixed;inset:0;z-index:200;background:var(--paper);display:flex;align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .authov .authbox{margin:auto 0}
   .authbox{max-width:430px;width:100%;text-align:center}
   .authtitle{font-family:'Cormorant Garamond';font-weight:500;font-size:36px;color:var(--navy);letter-spacing:1px;line-height:1}
   .authtag{font-family:'Cormorant Garamond';font-style:italic;font-size:18px;color:var(--brass);margin-top:6px}
@@ -56,7 +57,7 @@
   .prev-cap{font-family:'JetBrains Mono';font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);text-align:center;margin-top:12px}
   .authmsg{margin-top:16px;font-size:12.5px;line-height:1.5;min-height:18px;color:var(--ink2)}
   .authmsg.ok{color:var(--green)} .authmsg.err{color:var(--red)}
-  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;min-height:100vh;font-weight:300;
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;min-height:100dvh;font-weight:300;
     font-feature-settings:"tnum" 1;letter-spacing:.1px;
     background-image:
       radial-gradient(circle at 50% 0%, rgba(154,123,63,.05), transparent 55%),
@@ -908,6 +909,7 @@ async function proofItem(id){
   win.document.close();
 }
 
+function openAdd(){editId=null;$("mtitle").textContent="Add Holding";$("f_cat").selectedIndex=0;$("f_name").value="";$("f_paid").value="";$("f_val").value="";$("f_pdate").value="";$("f_serial").value="";$("f_notes").value="";resetPhotoField("");$("ov").classList.add("show");}
 function openEdit(id){const i=items.find(x=>x.id===id);if(!i)return;editId=id;$("mtitle").textContent="Edit Holding";$("f_cat").value=CAT_EMOJI[i.cat]+" "+i.cat;$("f_name").value=i.name;$("f_paid").value=i.paid;$("f_val").value=i.val;$("f_pdate").value=i.pdate||"";$("f_serial").value=i.serial||"";$("f_notes").value=i.notes||"";resetPhotoField(i.photo||"");$("ov").classList.add("show");}
 function closeAdd(){$("ov").classList.remove("show");pendingPhotoBlob=null;}
 
