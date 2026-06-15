@@ -12,7 +12,7 @@
   gtag('js', new Date());
   gtag('config', 'G-ZZZZRF8886');
 </script>
-<meta name="description" content="How to insure a collection of cards, watches, coins, sneakers, and more. Why homeowner's insurance often falls short, what coverage exists, and the documentation you need for a claim.">
+<meta name="description" content="How to insure a collection of cards, watches, coins, sneakers, and more. Why homeowner's insurance often falls short, what coverage exists, the specialist insurers collectors use, and the documentation you need for a claim.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -59,6 +59,11 @@
   .type h3{font-family:'Cormorant Garamond';font-weight:600;font-size:20px;color:var(--navy);margin-bottom:4px}
   .type p{margin:0;font-size:14px}
 
+  /* Agreed-value callout box */
+  .avbox{background:rgba(154,123,63,.08);border:1px solid var(--line2);border-left:2px solid var(--brass);border-radius:var(--r);padding:18px 20px;margin-top:18px}
+  .avbox h3{font-family:'Cormorant Garamond';font-weight:600;font-size:19px;color:var(--navy);margin-bottom:6px}
+  .avbox p{margin:0;font-size:14px}
+
   /* Checklist */
   .check{list-style:none;counter-reset:step;margin-top:10px}
   .check li{position:relative;padding:14px 0 14px 52px;border-bottom:1px solid var(--line)}
@@ -75,10 +80,17 @@
   .tiein .cta{display:inline-block;background:var(--brass);color:#fff;text-decoration:none;padding:13px 26px;border-radius:4px;font-weight:600;font-size:13.5px;letter-spacing:.5px;transition:.25s}
   .tiein .cta:hover{background:var(--brass2);color:var(--navy)}
 
-  /* Partners placeholder */
-  .partners{text-align:center;padding:34px 0}
-  .partners .pp{font-family:'JetBrains Mono';font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mut)}
-  .partners .pl{color:var(--ink2);font-size:14px;margin-top:8px}
+  /* Insurer list */
+  .insurers{display:grid;gap:14px;margin-top:8px}
+  .insurer{background:var(--card);border:1px solid var(--line2);border-radius:var(--r);padding:18px 20px;transition:.25s}
+  .insurer:hover{border-color:var(--brass);box-shadow:0 10px 30px -20px rgba(22,29,43,.4)}
+  .insurer-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .insurer h3{font-family:'Cormorant Garamond';font-weight:600;font-size:21px;color:var(--navy);letter-spacing:.2px}
+  .insurer .badge{font-family:'JetBrains Mono';font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--brass);border:1px solid var(--brass);border-radius:20px;padding:3px 9px;white-space:nowrap}
+  .insurer p{margin:0 0 12px;font-size:14px}
+  .insurer .visit{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);text-decoration:none;border-bottom:1px solid var(--line2);padding-bottom:2px;transition:.2s}
+  .insurer .visit:hover{color:var(--brass);border-color:var(--brass)}
+  .insurer-note{font-size:12.5px;color:var(--mut);font-style:italic;font-family:'Cormorant Garamond';font-size:14px;margin-top:18px;line-height:1.6}
 
   /* Disclaimer + footer */
   .disclaimer{font-size:12.5px;color:var(--mut);line-height:1.6;font-style:italic;font-family:'Cormorant Garamond';font-size:14px;padding:26px 0}
@@ -133,6 +145,11 @@
         <p>Companies that focus specifically on collections — cards, coins, art, watches, memorabilia. They tend to understand grading, appreciation, and market value far better than a general insurer, and often cover risks general policies exclude.</p>
       </div>
     </div>
+
+    <div class="avbox">
+      <h3>The key term: "agreed value"</h3>
+      <p>Specialty policies usually pay out at <strong>agreed value</strong> — the amount you and the insurer set when the policy starts. If a $30,000 collection is destroyed in a covered event, you receive that agreed $30,000 (minus any deductible). A standard home policy typically pays only <strong>replacement cost</strong> — what it costs to buy a comparable item new — which ignores collector value entirely. For appreciating collectibles, that difference is the whole point.</p>
+    </div>
   </section>
 
   <section>
@@ -157,13 +174,63 @@
     </div>
   </section>
 
-  <div class="partners">
-    <div class="pp">Insurance Partners</div>
-    <div class="pl">We're building a list of trusted collectibles insurers. Check back soon.</div>
-  </div>
+  <section>
+    <div class="kicker">Where to Get Covered</div>
+    <h2>Specialist insurers collectors use</h2>
+    <p>These companies focus on collectibles specifically — they understand grading, appreciation, and collector value in ways a general insurer often doesn't. This is a reference list to start your own research, not an endorsement or a paid partnership. Always compare quotes and read the policy terms before you commit.</p>
+    <div class="insurers">
+
+      <div class="insurer">
+        <div class="insurer-top">
+          <h3>American Collectors Insurance</h3>
+          <span class="badge">Since 1976</span>
+        </div>
+        <p>One of the largest and longest-running collectibles specialists. Covers cards and memorabilia against theft, accidental breakage, fire, flood, and more — broader than a standard home policy — with agreed-value protection and no depreciation on qualifying collections.</p>
+        <a class="visit" href="https://www.americancollectors.com/insurance/collectibles/" target="_blank" rel="noopener">Visit americancollectors.com →</a>
+      </div>
+
+      <div class="insurer">
+        <div class="insurer-top">
+          <h3>Collectibles Insurance Services</h3>
+          <span class="badge">Cards &amp; Dealers</span>
+        </div>
+        <p>A dedicated card and collectibles specialist covering baseball, basketball, football, and more — any size collection. Includes transit coverage for items temporarily away from home, and options for dealers as well as personal collectors.</p>
+        <a class="visit" href="https://www.collectinsure.com/" target="_blank" rel="noopener">Visit collectinsure.com →</a>
+      </div>
+
+      <div class="insurer">
+        <div class="insurer-top">
+          <h3>Cornell &amp; Finkelmeier (C&amp;F)</h3>
+          <span class="badge">Underwritten by Travelers</span>
+        </div>
+        <p>A veteran in collectibles coverage, with policies underwritten by Travelers and valuations based on fair market value. Long-established in the hobby — they insure the National Sports Collectors Convention.</p>
+        <a class="visit" href="https://www.cnfins.com/" target="_blank" rel="noopener">Visit cnfins.com →</a>
+      </div>
+
+      <div class="insurer">
+        <div class="insurer-top">
+          <h3>USAA</h3>
+          <span class="badge">Members Only</span>
+        </div>
+        <p>For military members, veterans, and their families. USAA's collectibles coverage is provided through its alliance with American Collectors Insurance, with agreed-value protection and a member discount. Worth checking first if you're USAA-eligible.</p>
+        <a class="visit" href="https://www.usaa.com/insurance/property/collectibles/" target="_blank" rel="noopener">Visit usaa.com →</a>
+      </div>
+
+      <div class="insurer">
+        <div class="insurer-top">
+          <h3>Distinguished Programs</h3>
+          <span class="badge">Broker-Based</span>
+        </div>
+        <p>Specialized collectibles coverage against theft, accidental damage, fire, water, and loss in transit, with automatic coverage for new additions up to a portion of the policy value. More broker-oriented, so it may suit larger or higher-value collections.</p>
+        <a class="visit" href="https://www.distinguished.com/" target="_blank" rel="noopener">Visit distinguished.com →</a>
+      </div>
+
+    </div>
+    <div class="insurer-note">Coverage details, eligibility, and pricing change — confirm everything directly with each company. WorthGauge is not affiliated with these insurers and earns nothing from this list; it's here because collectors kept asking who actually covers cards.</div>
+  </section>
 
   <div class="disclaimer">
-    This guide is general information for collectors and is not insurance, legal, or financial advice. Coverage, limits, and terms vary by insurer, policy, and location. WorthGauge is not an insurer and does not provide appraisals or coverage. Always consult a licensed insurance professional about your specific situation before relying on any policy.
+    This guide is general information for collectors and is not insurance, legal, or financial advice. Coverage, limits, and terms vary by insurer, policy, and location. WorthGauge is not an insurer and does not provide appraisals or coverage. The insurers listed are provided as a research starting point and are not endorsements. Always consult a licensed insurance professional about your specific situation before relying on any policy.
   </div>
 
 </div>
